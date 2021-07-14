@@ -18,8 +18,11 @@ functions:
     handler: token_vending_machine.handler
     package:
       patterns:
-        - token_vending_machine.py
+        - ./src/token_vending_machine.py
+        - ./src/policy-template/**
 
 resources:
   Resources:
     ${file(./resources/dynamodb.yaml)}
+plugins:
+  - serverless-python-requirements

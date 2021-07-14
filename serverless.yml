@@ -15,7 +15,7 @@ package:
 
 functions:
   tvm:
-    handler: token_vending_machine.handler
+    handler: src/token_vending_machine.handler
     package:
       patterns:
         - ./src/token_vending_machine.py
@@ -23,6 +23,8 @@ functions:
 
 resources:
   Resources:
+    ${file(./resources/role.yaml)}
     ${file(./resources/dynamodb.yaml)}
+
 plugins:
   - serverless-python-requirements

@@ -4,11 +4,11 @@
       "dynamodb:*"
     ],
     "Resource": [
-      "arn:aws:dynamodb:*:*:table/{{table}}"
+      "arn:aws:dynamodb:*:*:table/${table}"
     ],
     "Condition": {
       "ForAllValues:StringEquals": {
-        "dynamodb: LeadingKeys": [ "{{tenant}}" ]
+        "dynamodb: LeadingKeys": [ "${tenant}" ]
       }
     }
   }

@@ -15,16 +15,59 @@ package:
 
 functions:
   tvm:
+    name: token-vending-machine
     handler: src/token_vending_machine.handler
+    role: TvmDefaultRole
+    environment:
+      ROLE_ARN: !GetAtt TvmDefaultRole.Arn
     package:
       patterns:
-        - ./src/token_vending_machine.py
+        - ./src/token_vending_machine.py  
         - ./src/policy-template/**
 
 resources:
   Resources:
-    ${file(./resources/role.yaml)}
-    ${file(./resources/dynamodb.yaml)}
+    TvmDefaultRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: TvmDefaultRole
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: TvmDefaultPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:          
+                - Effect: Allow
+                  Action:
+                    - dynamodb:GetItem
+                    - dynamodb:BatchGetItem
+                    - dynamodb:Query
+                    - dynamodb:DescribeTable
+                  Resource: "arn:aws:dynamodb:us-east-1:*:table/*"
+                - Effect: Allow
+                  Action:
+                    - sts:AssumeRole
+                  Resource: arn:aws:iam::*:role/*
+    LegendaryGogglesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: legendaryGoggles
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 plugins:
   - serverless-python-requirements
